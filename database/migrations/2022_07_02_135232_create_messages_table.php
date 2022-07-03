@@ -21,7 +21,7 @@ class CreateMessagesTable extends Migration
             $table->string('receptor');
             $table->string('message');
             $table->tinyInteger('status')->default(Message::STATUS['in_queue']);
-            $table->tinyInteger('cost')->default(0);
+            $table->smallInteger('cost')->default(0);
             $table->dateTime('publish_time')->default(now());
             $table->timestamps();
 
