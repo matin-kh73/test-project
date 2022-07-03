@@ -2,10 +2,12 @@
 
 namespace App\Services\SMS\KaveNegar;
 
+use App\Drivers\SMS\SMSContract;
 use App\Exceptions\KaveNegarException;
 use App\Jobs\SMS\KaveNegarJob;
-use App\Services\SMS\SMSContract;
+use Carbon\Carbon;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
 
 class KaveNegarService implements SMSContract
 {
@@ -18,12 +20,22 @@ class KaveNegarService implements SMSContract
     private array $urls;
 
     /**
+     * @var PendingRequest
+     */
+    private $request;
+
+    /**
+     * @var mixed
+     */
+    private $apiKey;
+
+    /**
      * KaveNegarService constructor.
      *
-     * @param array $kaveNegarConfig
      * @param PendingRequest $request
+     * @param array $kaveNegarConfig
      */
-    public function __construct(private array $kaveNegarConfig, private PendingRequest $request)
+    public function __construct(PendingRequest $request, array $kaveNegarConfig)
     {
         $this->request = $request;
         $this->apiKey = $kaveNegarConfig['api-key'];
@@ -33,31 +45,34 @@ class KaveNegarService implements SMSContract
 
     /**
      * @param string $message
+     * @param string $sender
      * @param array $receptors
-     * @param array $options
+     * @param Carbon $date
      *
-     * @return mixed|void
+     * @return void
      */
-    public function sendAsyncMessage(string $message, array $receptors, array $options = [])
+    public function sendAsyncMessage(string $message, array $receptors, string $sender = '', Carbon $date = null): void
     {
-        $data = prepareBodyRequest($message, $receptors, $options);
-        KaveNegarJob::dispatch('get', $this->urls[self::SEND_SINGLE_MESSAGE], $data);
+        $body = prepareBodyRequest($receptors, $message, $sender, $date);
+
+        KaveNegarJob::dispatch('get', $this->urls[self::SEND_SINGLE_MESSAGE], $body);
     }
 
     /**
      * @param string $message
+     * @param string $sender
      * @param array $receptors
-     * @param array $options
+     * @param Carbon|null $date
      *
-     * @return mixed
+     * @return Response
      */
-    public function sendSyncMessage(string $message, array $receptors, array $options = [])
+    public function sendSyncMessage(string $message, array $receptors, string $sender = '', Carbon $date = null): Response
     {
-        $data = prepareBodyRequest($message, $receptors, $options);
+        $data = prepareBodyRequest($receptors, $message, $sender, $date);
         $response = $this->request->get($this->urls[self::SEND_SINGLE_MESSAGE], $data)->onError(function ($error) {
             throw new KaveNegarException($error->json(), $error->status());
         });
-        return $response->json();
+        return $response;
     }
 
     /**

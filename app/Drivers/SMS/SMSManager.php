@@ -2,7 +2,6 @@
 
 namespace App\Drivers\SMS;
 
-use App\Services\Message\MessageService;
 use App\Services\SMS\KaveNegar\KaveNegarService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Client\PendingRequest;
@@ -24,6 +23,6 @@ class SMSManager extends Manager
      */
     public function createKaveNegarDriver()
     {
-        return new KaveNegarService(app()->make(PendingRequest::class), app()->make(MessageService::class), config('sms.drivers.kave-negar'));
+        return new KaveNegarService(app()->make(PendingRequest::class), config('sms.drivers.kave-negar'));
     }
 }

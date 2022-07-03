@@ -9,21 +9,21 @@ interface SMSContract
 {
     /**
      * @param string $message
-     * @param string $sender
      * @param array $receptors
-     * @param Carbon $date
+     * @param string $sender
+     * @param Carbon|null $date
      *
      * @return void
      */
-    public function sendAsyncMessage(string $message, string $sender, array $receptors, Carbon $date = null): void;
+    public function sendAsyncMessage(string $message, array $receptors, string $sender = '', Carbon $date = null): void;
 
     /**
      * @param string $message
-     * @param string $sender
      * @param array $receptors
+     * @param string $sender
      * @param Carbon|null $date
      *
      * @return Response
      */
-    public function sendSyncMessage(string $message, string $sender, array $receptors, Carbon $date = null): Response;
+    public function sendSyncMessage(string $message, array $receptors, string $sender = '', Carbon $date = null): Response;
 }

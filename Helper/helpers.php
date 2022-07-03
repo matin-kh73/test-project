@@ -1,21 +1,27 @@
 <?php
 
+use Carbon\Carbon;
+
 if (!function_exists('prepareBodyRequest')) {
 
     /**
      * @param string $message
+     * @param string $sender
      * @param array $receptors
-     * @param array $options
+     * @param Carbon $date |null
      *
      * @return array
      */
-    function prepareBodyRequest(string $message, array $receptors, array $options = [])
+    function prepareBodyRequest(array $receptors, string $message, string $sender, Carbon $date = null)
     {
-        return [
+        $data = [];
+        if ($date) {
+            $data['date'] = $date;
+        }
+        $data = [
             'receptor' => implode(',', $receptors),
             'message' => $message,
-            'date' => $options['date'] ?? now()->unix(),
-            'sender' => $options['sender'] ?? ''
+            'sender' => $sender ?? config('sms.drivers.kave-negar.sender')
         ];
     }
 }
