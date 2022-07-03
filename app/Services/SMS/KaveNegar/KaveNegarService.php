@@ -3,6 +3,7 @@
 namespace App\Services\SMS\KaveNegar;
 
 use App\Drivers\SMS\SMSContract;
+use App\Events\MessageSendSuccessfullyEvent;
 use App\Exceptions\KaveNegarException;
 use App\Jobs\SMS\KaveNegarJob;
 use Carbon\Carbon;
@@ -49,13 +50,17 @@ class KaveNegarService implements SMSContract
      * @param array $receptors
      * @param Carbon $date
      *
-     * @return void
+     * @return array
      */
-    public function sendAsyncMessage(string $message, array $receptors, string $sender = '', Carbon $date = null): void
+    public function sendAsyncMessage(string $message, array $receptors, string $sender = '', Carbon $date = null): array
     {
         $body = prepareBodyRequest($receptors, $message, $sender, $date);
 
         KaveNegarJob::dispatch('get', $this->urls[self::SEND_SINGLE_MESSAGE], $body);
+
+        return [
+            'message' => __('sending_message_successful')
+        ];
     }
 
     /**
@@ -64,15 +69,22 @@ class KaveNegarService implements SMSContract
      * @param array $receptors
      * @param Carbon|null $date
      *
-     * @return Response
+     * @return array
      */
-    public function sendSyncMessage(string $message, array $receptors, string $sender = '', Carbon $date = null): Response
+    public function sendSyncMessage(string $message, array $receptors, string $sender = '', Carbon $date = null): array
     {
         $data = prepareBodyRequest($receptors, $message, $sender, $date);
         $response = $this->request->get($this->urls[self::SEND_SINGLE_MESSAGE], $data)->onError(function ($error) {
             throw new KaveNegarException($error->json(), $error->status());
         });
-        return $response;
+
+        if ($response->successful()) {
+            MessageSendSuccessfullyEvent::dispatch($response->json()['entries']);
+        }
+
+        return [
+            'message' => $response->json()['return']['message']
+        ];
     }
 
     /**

@@ -13,9 +13,9 @@ interface SMSContract
      * @param string $sender
      * @param Carbon|null $date
      *
-     * @return void
+     * @return array
      */
-    public function sendAsyncMessage(string $message, array $receptors, string $sender = '', Carbon $date = null): void;
+    public function sendAsyncMessage(string $message, array $receptors, string $sender = '', Carbon $date = null): array;
 
     /**
      * @param string $message
@@ -23,7 +23,7 @@ interface SMSContract
      * @param string $sender
      * @param Carbon|null $date
      *
-     * @return Response
+     * @return array
      */
-    public function sendSyncMessage(string $message, array $receptors, string $sender = '', Carbon $date = null): Response;
+    public function sendSyncMessage(string $message, array $receptors, string $sender = '', Carbon $date = null): array;
 }

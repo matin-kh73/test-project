@@ -8,7 +8,7 @@ if (!function_exists('prepareBodyRequest')) {
      * @param string $message
      * @param string $sender
      * @param array $receptors
-     * @param Carbon $date |null
+     * @param Carbon $date|null
      *
      * @return array
      */
@@ -23,5 +23,6 @@ if (!function_exists('prepareBodyRequest')) {
             'message' => $message,
             'sender' => $sender ?? config('sms.drivers.kave-negar.sender')
         ];
+        return $data;
     }
 }
