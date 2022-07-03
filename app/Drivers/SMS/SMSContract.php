@@ -1,23 +1,29 @@
 <?php
 
-namespace App\Services\SMS;
+namespace App\Drivers\SMS;
+
+use Carbon\Carbon;
+use Illuminate\Http\Client\Response;
 
 interface SMSContract
 {
     /**
      * @param string $message
+     * @param string $sender
      * @param array $receptors
-     * @param array $options
+     * @param Carbon $date
      *
-     * @return mixed
+     * @return void
      */
-    public function sendAsyncMessage(string $message, array $receptors, array $options = []);
+    public function sendAsyncMessage(string $message, string $sender, array $receptors, Carbon $date = null): void;
 
     /**
      * @param string $message
+     * @param string $sender
      * @param array $receptors
-     * @param array $options
-     * @return mixed
+     * @param Carbon|null $date
+     *
+     * @return Response
      */
-    public function sendSyncMessage(string $message, array $receptors, array $options = []);
+    public function sendSyncMessage(string $message, string $sender, array $receptors, Carbon $date = null): Response;
 }
