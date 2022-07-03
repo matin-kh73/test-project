@@ -5,10 +5,9 @@ namespace App\Services\SMS\KaveNegar;
 use App\Drivers\SMS\SMSContract;
 use App\Events\MessageSendSuccessfullyEvent;
 use App\Exceptions\KaveNegarException;
-use App\Jobs\SMS\KaveNegarJob;
+use App\Jobs\SMS\KaveNegarSendMessageJob;
 use Carbon\Carbon;
 use Illuminate\Http\Client\PendingRequest;
-use Illuminate\Http\Client\Response;
 
 class KaveNegarService implements SMSContract
 {
@@ -21,22 +20,12 @@ class KaveNegarService implements SMSContract
     private array $urls;
 
     /**
-     * @var PendingRequest
-     */
-    private $request;
-
-    /**
-     * @var mixed
-     */
-    private $apiKey;
-
-    /**
      * KaveNegarService constructor.
      *
      * @param PendingRequest $request
      * @param array $kaveNegarConfig
      */
-    public function __construct(PendingRequest $request, array $kaveNegarConfig)
+    public function __construct(private PendingRequest $request, private array $kaveNegarConfig)
     {
         $this->request = $request;
         $this->apiKey = $kaveNegarConfig['api-key'];
@@ -56,7 +45,7 @@ class KaveNegarService implements SMSContract
     {
         $body = prepareBodyRequest($receptors, $message, $sender, $date);
 
-        KaveNegarJob::dispatch('get', $this->urls[self::SEND_SINGLE_MESSAGE], $body);
+        KaveNegarSendMessageJob::dispatch('get', $this->urls[self::SEND_SINGLE_MESSAGE], $body);
 
         return [
             'message' => __('sending_message_successful')

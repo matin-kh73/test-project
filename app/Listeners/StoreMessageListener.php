@@ -5,24 +5,17 @@ namespace App\Listeners;
 use App\Events\MessageSendSuccessfullyEvent;
 use App\Http\Resources\KaveNegarResource;
 use App\Services\Message\MessageService;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class StoreMessageListener
 {
-    /**
-     * @var MessageService
-     */
-    private $messageService;
-
     /**
      * Create the event listener.
      *
      * @param MessageService $messageService
      */
-    public function __construct(MessageService $messageService)
+    public function __construct(private MessageService $messageService)
     {
-        $this->messageService = $messageService;
+
     }
 
     /**
