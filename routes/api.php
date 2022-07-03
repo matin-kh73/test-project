@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('v1')->group(function () {
+    Route::post('send-async-message', [\App\Http\Controllers\API\V1\SMSController::class, 'sendAsyncMessage']);
+    Route::post('send-sync-message', [\App\Http\Controllers\API\V1\SMSController::class, 'sendSyncMessage']);
+});
