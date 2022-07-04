@@ -13,6 +13,7 @@ use Illuminate\Queue\{
     InteractsWithQueue,
     SerializesModels
 };
+use Throwable;
 
 class KaveNegarSendMessageJob implements ShouldQueue
 {
@@ -39,16 +40,26 @@ class KaveNegarSendMessageJob implements ShouldQueue
      */
     public function handle(PendingRequest $request)
     {
-        try {
-            $response = $request->{$this->httpMethod}($this->url, $this->data)->onError(function ($error) {
-                throw new Exception($error, $error->status());
-            });
-            if ($response->successful()) {
-                $results = $response->json();
-                MessageSendSuccessfullyEvent::dispatch($results['entries']);
-            }
-        } catch (Exception $exception) {
-            Log::error($exception);
+
+        $response = $request->{$this->httpMethod}($this->url, $this->data)->onError(function ($error) {
+            throw new Exception($error, $error->status());
+        });
+
+        if ($response->successful()) {
+            $results = $response->json();
+            MessageSendSuccessfullyEvent::dispatch($results['entries']);
         }
+    }
+
+    /**
+     * Handle a job failure.
+     *
+     * @param \Throwable $exception
+     * @return void
+     */
+    public function failed(Throwable $exception)
+    {
+        // TODO: push the failed jobs in another queue for precess again
+        Log::error($exception);
     }
 }
