@@ -21,7 +21,7 @@ if (!function_exists('prepareBodyRequest')) {
         $data = [
             'receptor' => implode(',', $receptors),
             'message' => $message,
-            'sender' => $sender ?? config('sms.drivers.kave-negar.sender')
+            'sender' => $sender ?: config('sms.drivers.kave-negar.sender')
         ];
         return $data;
     }

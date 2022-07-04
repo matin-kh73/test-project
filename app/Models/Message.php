@@ -10,7 +10,7 @@ class Message extends Model
     use HasFactory;
 
     protected $fillable = [
-        'message_id', 'sender', 'receptor', 'message', 'status', 'cost', 'publish_time'
+        'message_id', 'sender', 'receptor', 'message', 'status', 'cost', 'publish_time', 'created_at', 'updated_at'
     ];
 
     const STATUS = [

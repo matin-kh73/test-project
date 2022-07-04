@@ -22,7 +22,9 @@ class KaveNegarResource extends JsonResource
             'status' => $this['status'],
             'message' => $this['message'],
             'publish_time' => Carbon::createFromTimestamp($this['date']),
-            'message_id' => $this['messageid']
+            'message_id' => $this['messageid'],
+            'created_at' => now(),
+            'updated_at' => now()
         ];
     }
 }
