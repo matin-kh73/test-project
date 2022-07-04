@@ -25,7 +25,7 @@ class KaveNegarService implements SMSContract
      * @param PendingRequest $request
      * @param array $kaveNegarConfig
      */
-    public function __construct(private PendingRequest $request, private array $kaveNegarConfig)
+    public function __construct( PendingRequest $request,  array $kaveNegarConfig)
     {
         $this->request = $request;
         $this->apiKey = $kaveNegarConfig['api-key'];
@@ -43,9 +43,9 @@ class KaveNegarService implements SMSContract
      */
     public function sendAsyncMessage(string $message, array $receptors, string $sender = '', Carbon $date = null): array
     {
-        $body = prepareBodyRequest($receptors, $message, $sender, $date);
+        $body = prepareBodyRequest($receptors, $message, $sender);
 
-        KaveNegarSendMessageJob::dispatch('get', $this->urls[self::SEND_SINGLE_MESSAGE], $body);
+        KaveNegarSendMessageJob::dispatch('get', $this->urls[self::SEND_SINGLE_MESSAGE], $body)->delay($date ?? now());
 
         return [
             'message' => __('sending_message_successful')
@@ -56,13 +56,12 @@ class KaveNegarService implements SMSContract
      * @param string $message
      * @param string $sender
      * @param array $receptors
-     * @param Carbon|null $date
      *
      * @return array
      */
-    public function sendSyncMessage(string $message, array $receptors, string $sender = '', Carbon $date = null): array
+    public function sendSyncMessage(string $message, array $receptors, string $sender = ''): array
     {
-        $data = prepareBodyRequest($receptors, $message, $sender, $date);
+        $data = prepareBodyRequest($receptors, $message, $sender);
         $response = $this->request->get($this->urls[self::SEND_SINGLE_MESSAGE], $data)->onError(function ($error) {
             throw new KaveNegarException($error->json(), $error->status());
         });

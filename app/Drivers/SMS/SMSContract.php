@@ -21,9 +21,8 @@ interface SMSContract
      * @param string $message
      * @param array $receptors
      * @param string $sender
-     * @param Carbon|null $date
      *
      * @return array
      */
-    public function sendSyncMessage(string $message, array $receptors, string $sender = '', Carbon $date = null): array;
+    public function sendSyncMessage(string $message, array $receptors, string $sender = ''): array;
 }
