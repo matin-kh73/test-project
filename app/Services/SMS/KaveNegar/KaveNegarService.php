@@ -25,7 +25,7 @@ class KaveNegarService implements SMSContract
      * @param PendingRequest $request
      * @param array $kaveNegarConfig
      */
-    public function __construct( PendingRequest $request,  array $kaveNegarConfig)
+    public function __construct(protected PendingRequest $request,  protected array $kaveNegarConfig)
     {
         $this->request = $request;
         $this->apiKey = $kaveNegarConfig['api-key'];
