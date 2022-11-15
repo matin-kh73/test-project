@@ -9,7 +9,7 @@ if (!function_exists('prepareBodyRequest')) {
      *
      * @return array
      */
-    function prepareBodyRequest(array $receptors, string $message, string $sender)
+    function prepareBodyRequest(array $receptors, string $message, string $sender): array
     {
         return [
             'receptor' => implode(',', $receptors),

@@ -12,7 +12,7 @@ class SMSManager extends Manager
     /**
      * @return string
      */
-    public function getDefaultDriver()
+    public function getDefaultDriver(): string
     {
         return 'kave-negar';
     }
@@ -21,7 +21,7 @@ class SMSManager extends Manager
      * @return KaveNegarService
      * @throws BindingResolutionException
      */
-    public function createKaveNegarDriver()
+    public function createKaveNegarDriver(): KaveNegarService
     {
         return new KaveNegarService(app()->make(PendingRequest::class), config('sms.drivers.kave-negar'));
     }

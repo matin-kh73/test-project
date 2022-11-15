@@ -19,6 +19,12 @@ class KaveNegarSendMessageJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    private string $httpMethod;
+
+    private string $url;
+
+    private array $data;
+
     /**
      * Create a new job instance.
      *
@@ -26,9 +32,11 @@ class KaveNegarSendMessageJob implements ShouldQueue
      * @param string $url
      * @param array $data
      */
-    public function __construct(private string $httpMethod, private string $url, private array $data)
+    public function __construct(string $httpMethod, string $url, array $data)
     {
-
+        $this->httpMethod = $httpMethod;
+        $this->url = $url;
+        $this->data = $data;
     }
 
     /**
@@ -37,6 +45,7 @@ class KaveNegarSendMessageJob implements ShouldQueue
      * @param PendingRequest $request
      *
      * @return void
+     * @throws Exception
      */
     public function handle(PendingRequest $request)
     {

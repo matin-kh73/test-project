@@ -1,6 +1,7 @@
 <?php
 return [
     'drivers' => [
+        'default' => 'kave-negar',
         'kave-negar' => [
             'api-key' => env('SMS_API_KEY'),
             'sender' => env('SMS_SENDER'),

@@ -14,10 +14,11 @@ class KaveNegarService implements SMSContract
     const SEND_SINGLE_MESSAGE = 'send';
     const CHECK_MESSAE_STATUS = 'status';
 
-    /**
-     * @var array
-     */
     private array $urls;
+
+    protected PendingRequest $request;
+
+    private string $apiKey;
 
     /**
      * KaveNegarService constructor.
@@ -25,7 +26,7 @@ class KaveNegarService implements SMSContract
      * @param PendingRequest $request
      * @param array $kaveNegarConfig
      */
-    public function __construct(protected PendingRequest $request,  protected array $kaveNegarConfig)
+    public function __construct(PendingRequest $request, array $kaveNegarConfig)
     {
         $this->request = $request;
         $this->apiKey = $kaveNegarConfig['api-key'];
@@ -35,9 +36,9 @@ class KaveNegarService implements SMSContract
 
     /**
      * @param string $message
-     * @param string $sender
      * @param array $receptors
-     * @param Carbon $date
+     * @param string $sender
+     * @param Carbon|null $date
      *
      * @return array
      */
@@ -54,10 +55,11 @@ class KaveNegarService implements SMSContract
 
     /**
      * @param string $message
-     * @param string $sender
      * @param array $receptors
      *
+     * @param string $sender
      * @return array
+     * @throws KaveNegarException
      */
     public function sendSyncMessage(string $message, array $receptors, string $sender = ''): array
     {
@@ -78,7 +80,7 @@ class KaveNegarService implements SMSContract
     /**
      * @param array $urls
      */
-    private function prepareUrls(array $urls)
+    private function prepareUrls(array $urls): void
     {
         foreach ($urls as $name => $url) {
             $this->urls[$name] = str_replace('{api-key}', $this->apiKey, $url);
